@@ -36,6 +36,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid } = req.user;
         const user = yield firebase_1.db.collection("profile").doc(uid).get();
+        console.log(user.data(), "m");
         res.status(201).json(user.data());
     }
     catch (error) {

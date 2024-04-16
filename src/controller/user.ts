@@ -24,6 +24,7 @@ export const getUser = async (req: Request, res: Response) => {
   try {
     const { uid } = req.user!;
     const user = await db.collection("profile").doc(uid).get();
+    console.log(user.data(), "m");
     res.status(201).json(user.data());
   } catch (error) {
     return res.status(400).json(error);

@@ -1,4 +1,4 @@
-export const householdCF = {
+export const energyCF = {
   lpg: {
     units: {
       tonne: 2939.36,
@@ -75,6 +75,14 @@ export const carSizeCF = {
         mile: 0.03481,
       },
       batteryHybrid: {
+        km: 0,
+        mile: 0,
+      },
+      cng: {
+        km: 0.1566,
+        mile: 0.25203,
+      },
+      lpg: {
         km: 0,
         mile: 0,
       },
@@ -257,4 +265,7 @@ export const priceMultiplier = {
   restaurant: 1.139,
   householdAppliances: 0.079,
   financialServices: 0.274,
+  veterinaryServices: 0.44,
+  saloonAndGrooming: 0.168,
+  jeweryAndWatch: 0.168,
 };
