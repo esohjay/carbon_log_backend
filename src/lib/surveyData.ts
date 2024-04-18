@@ -5,7 +5,7 @@ export const energyCF = {
       litre: 1.56,
     },
   },
-  naturalGas: {
+  gas: {
     units: {
       tonne: 2562.57,
       cubicMeter: 2.04,

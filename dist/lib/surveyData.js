@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.priceMultiplier = exports.dietaryCF = exports.publicTransportCF = exports.motorBikeCF = exports.carSizeCF = exports.flightCF = exports.householdCF = void 0;
-exports.householdCF = {
+exports.priceMultiplier = exports.dietaryCF = exports.publicTransportCF = exports.motorBikeCF = exports.carSizeCF = exports.flightCF = exports.energyCF = void 0;
+exports.energyCF = {
     lpg: {
         units: {
             tonne: 2939.36,
             litre: 1.56,
         },
     },
-    naturalGas: {
+    gas: {
         units: {
             tonne: 2562.57,
             cubicMeter: 2.04,
@@ -76,6 +76,14 @@ exports.carSizeCF = {
                 mile: 0.03481,
             },
             batteryHybrid: {
+                km: 0,
+                mile: 0,
+            },
+            cng: {
+                km: 0.1566,
+                mile: 0.25203,
+            },
+            lpg: {
                 km: 0,
                 mile: 0,
             },

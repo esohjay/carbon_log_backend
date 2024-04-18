@@ -33,6 +33,7 @@ export const createSurvey = async (req: Request, res: Response) => {
       goodsConsumption,
       servicesConsumption,
     } = req.body as SurveyResponse;
+
     const dietFootprint = dietaryCF[diet] * 365;
     const energyFootprint = calculateEnergy(energy, energyCF);
     const carFootprint = calculateCar(car, carSizeCF);
@@ -53,22 +54,59 @@ export const createSurvey = async (req: Request, res: Response) => {
       { ...goodsConsumption, ...servicesConsumption },
       priceMultiplier
     );
-    res
-      .status(201)
-      .json({
-        message: "Success",
-        footprint: {
-          energyFootprint,
-          carFootprint,
-          bikeFootprint,
-          returnFlightFootprint,
-          oneWayFlightFootprint,
-          dietFootprint,
-          publicTransportFootprint,
-          goodsAndServicesFootprint,
+    const homeEmission = energyFootprint / householdSize;
+    const shoppingEmission = goodsAndServicesFootprint / householdSize;
+    const travelEmission = [
+      carFootprint,
+      bikeFootprint,
+      returnFlightFootprint,
+      oneWayFlightFootprint,
+      publicTransportFootprint,
+    ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const totalEmission = [
+      homeEmission,
+      dietFootprint,
+      travelEmission,
+      shoppingEmission,
+    ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    console.log(
+      carFootprint,
+      bikeFootprint,
+      returnFlightFootprint,
+      oneWayFlightFootprint,
+      publicTransportFootprint
+    );
+    // const addSurvery = await db
+    //   .collection("profile")
+    //   .doc(uid)
+    //   .set(
+    //     {
+    //       survey: { ...req.body },
+    //       totalEmission,
+    //       emissionCategory: {
+    //         home: homeEmission,
+    //         shopping: shoppingEmission,
+    //         foodAndDrinks: dietFootprint,
+    //         travel: travelEmission,
+    //       },
+    //     },
+    //     { merge: true }
+    //   );
+
+    res.status(201).json({
+      message: "Success",
+      data: {
+        totalEmission,
+        emissionCategory: {
+          home: homeEmission,
+          shopping: shoppingEmission,
+          foodAndDrinks: dietFootprint,
+          travel: travelEmission,
         },
-      });
+      },
+    });
   } catch (error) {
+    console.log(error);
     return res.status(400).json(error);
   }
 };

@@ -33,7 +33,7 @@ export interface GoodsAndServices {
   };
 }
 export interface SurveyResponse {
-  householdSize: string;
+  householdSize: number;
   energy: {
     electricity: {
       value: string;

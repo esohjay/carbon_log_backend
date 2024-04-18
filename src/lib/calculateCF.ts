@@ -18,7 +18,7 @@ export const calculateEnergy = (
   let sum = 0;
   for (const key of keyArrays) {
     const value = surveyResponse[key].value;
-    if (value !== "") {
+    if (value !== "" && surveyResponse[key].unit !== "") {
       const unit = conversionFactor[key].units[surveyResponse[key].unit];
       sum += parseFloat(value) * unit;
     }
@@ -101,10 +101,12 @@ export const calculatePublicTransport = (
   const keyArrays = Object.keys(surveyResponse);
   for (const key of keyArrays) {
     const { period, value, unit } = surveyResponse[key];
-    if (period === "yearly") {
-      sum += parseFloat(value) * conversionFactor[key][unit];
-    } else {
-      sum += parseFloat(value) * conversionFactor[key][unit] * 12;
+    if (value !== "" && period !== "" && (unit === "km" || unit === "mile")) {
+      if (period === "yearly") {
+        sum += parseFloat(value) * conversionFactor[key][unit];
+      } else {
+        sum += parseFloat(value) * conversionFactor[key][unit] * 12;
+      }
     }
   }
   return sum;
@@ -119,10 +121,12 @@ export const calculateGoodsAndServices = (
   const keyArrays = Object.keys(surveyResponse);
   for (const key of keyArrays) {
     const { period, value } = surveyResponse[key];
-    if (period === "yearly") {
-      sum += parseFloat(value) * conversionFactor[key];
-    } else {
-      sum += parseFloat(value) * conversionFactor[key] * 12;
+    if (value !== "" && period !== "") {
+      if (period === "yearly") {
+        sum += parseFloat(value) * conversionFactor[key];
+      } else {
+        sum += parseFloat(value) * conversionFactor[key] * 12;
+      }
     }
   }
   return sum;
