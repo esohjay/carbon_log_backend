@@ -76,22 +76,22 @@ export const createSurvey = async (req: Request, res: Response) => {
       oneWayFlightFootprint,
       publicTransportFootprint
     );
-    // const addSurvery = await db
-    //   .collection("profile")
-    //   .doc(uid)
-    //   .set(
-    //     {
-    //       survey: { ...req.body },
-    //       totalEmission,
-    //       emissionCategory: {
-    //         home: homeEmission,
-    //         shopping: shoppingEmission,
-    //         foodAndDrinks: dietFootprint,
-    //         travel: travelEmission,
-    //       },
-    //     },
-    //     { merge: true }
-    //   );
+    const addSurvery = await db
+      .collection("profile")
+      .doc(uid)
+      .set(
+        {
+          survey: { ...req.body },
+          totalEmission,
+          emissionCategory: {
+            home: homeEmission,
+            shopping: shoppingEmission,
+            diet: dietFootprint,
+            travel: travelEmission,
+          },
+        },
+        { merge: true }
+      );
 
     res.status(201).json({
       message: "Success",
@@ -100,7 +100,7 @@ export const createSurvey = async (req: Request, res: Response) => {
         emissionCategory: {
           home: homeEmission,
           shopping: shoppingEmission,
-          foodAndDrinks: dietFootprint,
+          diet: dietFootprint,
           travel: travelEmission,
         },
       },

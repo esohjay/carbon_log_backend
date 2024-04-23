@@ -9,6 +9,7 @@ const serverless_http_1 = __importDefault(require("serverless-http"));
 const ExpressError_1 = require("./middleware/ExpressError");
 const user_1 = __importDefault(require("./routes/user"));
 const survey_1 = __importDefault(require("./routes/survey"));
+const track_1 = __importDefault(require("./routes/track"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -21,6 +22,7 @@ app.get("/", (_, res) => {
 });
 app.use("/api/v1/user", user_1.default);
 app.use("/api/v1/survey", survey_1.default);
+app.use("/api/v1/track", track_1.default);
 app.all("*", (req, res, next) => {
     next(new ExpressError_1.ExpressError("Page Not Found", 404));
 });

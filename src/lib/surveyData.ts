@@ -264,6 +264,8 @@ export const priceMultiplier = {
   education: 0.179,
   restaurant: 1.139,
   householdAppliances: 0.079,
+  householdTextiles: 0.596,
+  householdUtensils: 0.541,
   financialServices: 0.274,
   veterinaryServices: 0.44,
   saloonAndGrooming: 0.168,

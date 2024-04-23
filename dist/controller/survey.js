@@ -50,7 +50,7 @@ const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             emissionCategory: {
                 home: homeEmission,
                 shopping: shoppingEmission,
-                foodAndDrinks: dietFootprint,
+                diet: dietFootprint,
                 travel: travelEmission,
             },
         }, { merge: true });
@@ -61,7 +61,7 @@ const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 emissionCategory: {
                     home: homeEmission,
                     shopping: shoppingEmission,
-                    foodAndDrinks: dietFootprint,
+                    diet: dietFootprint,
                     travel: travelEmission,
                 },
             },

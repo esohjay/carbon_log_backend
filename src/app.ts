@@ -3,6 +3,7 @@ import serverless from "serverless-http";
 import { ExpressError } from "./middleware/ExpressError";
 import userRoute from "./routes/user";
 import surveyRoute from "./routes/survey";
+import trackRoute from "./routes/track";
 import cors from "cors";
 
 const app = express();
@@ -17,6 +18,7 @@ app.get("/", (_, res) => {
 });
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/survey", surveyRoute);
+app.use("/api/v1/track", trackRoute);
 
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
