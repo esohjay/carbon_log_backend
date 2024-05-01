@@ -61,16 +61,9 @@ export interface SurveyResponse {
     };
   };
   flight: {
-    withRf: {
-      domestic: string;
-      shortHaul: string;
-      longHaul: string;
-    };
-    withoutRf: {
-      domestic: string;
-      shortHaul: string;
-      longHaul: string;
-    };
+    domestic: string;
+    shortHaul: string;
+    longHaul: string;
   };
   car: CarData[]; // Array of CarData objects
   bike: BikeData[]; // Array of BikeData objects

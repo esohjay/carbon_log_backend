@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.priceMultiplier = exports.dietaryCF = exports.publicTransportCF = exports.motorBikeCF = exports.carSizeCF = exports.flightCF = exports.energyCF = void 0;
+exports.priceMultiplier = exports.dietaryCF = exports.publicTransportCF = exports.motorBikeCF = exports.carSizeCF = exports.averageFlightDistance = exports.flightCF = exports.energyCF = void 0;
 exports.energyCF = {
     lpg: {
         units: {
@@ -41,16 +41,14 @@ exports.energyCF = {
     },
 };
 exports.flightCF = {
-    withRF: {
-        domestic: 0.27258,
-        shortHaul: 0.18592,
-        longHaul: 0.26128,
-    },
-    withoutRF: {
-        domestic: 0.26128,
-        shortHaul: 0.10974,
-        longHaul: 0.15423,
-    },
+    domestic: 0.27258,
+    shortHaul: 0.18592,
+    longHaul: 0.26128,
+};
+exports.averageFlightDistance = {
+    domestic: 411,
+    shortHaul: 1306,
+    longHaul: 6872,
 };
 exports.carSizeCF = {
     small: {
@@ -265,6 +263,13 @@ exports.priceMultiplier = {
     householdUtensils: 0.541,
     financialServices: 0.274,
     veterinaryServices: 0.44,
-    saloonAndGrooming: 0.168,
-    jeweryAndWatch: 0.168,
+    salonAndGrooming: 0.168,
+    jewelleryAndWatch: 0.168,
+    garden: 0.134,
+    milkCheeseEgg: 0.475,
+    fruit: 0.05,
+    vegetables: 0.05,
+    oilAndFat: 0.128,
+    coffeeAndTea: 0.069,
+    waterAndJuice: 0.283,
 };

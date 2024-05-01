@@ -11,27 +11,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSurvey = void 0;
 const firebase_1 = require("../lib/firebase");
-const calculateCF_1 = require("../lib/calculateCF");
+const calculateCfactor_1 = require("../lib/calculateCfactor");
 const surveyData_1 = require("../lib/surveyData");
 const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid, email } = req.user;
         const { householdSize, energy, flight, car, bike, publicTransport, diet, goodsConsumption, servicesConsumption, } = req.body;
         const dietFootprint = surveyData_1.dietaryCF[diet] * 365;
-        const energyFootprint = (0, calculateCF_1.calculateEnergy)(energy, surveyData_1.energyCF);
-        const carFootprint = (0, calculateCF_1.calculateCar)(car, surveyData_1.carSizeCF);
-        const returnFlightFootprint = (0, calculateCF_1.calculateFlight)(flight.withRf, surveyData_1.flightCF.withRF);
-        const oneWayFlightFootprint = (0, calculateCF_1.calculateFlight)(flight.withoutRf, surveyData_1.flightCF.withoutRF);
-        const bikeFootprint = (0, calculateCF_1.calculateBike)(bike, surveyData_1.motorBikeCF);
-        const publicTransportFootprint = (0, calculateCF_1.calculatePublicTransport)(publicTransport, surveyData_1.publicTransportCF);
-        const goodsAndServicesFootprint = (0, calculateCF_1.calculateGoodsAndServices)(Object.assign(Object.assign({}, goodsConsumption), servicesConsumption), surveyData_1.priceMultiplier);
+        const energyFootprint = (0, calculateCfactor_1.calculateEnergy)(energy, surveyData_1.energyCF);
+        const carFootprint = (0, calculateCfactor_1.calculateCar)(car, surveyData_1.carSizeCF);
+        const flightFootprint = (0, calculateCfactor_1.calculateFlight)(flight, surveyData_1.flightCF);
+        const bikeFootprint = (0, calculateCfactor_1.calculateBike)(bike, surveyData_1.motorBikeCF);
+        const publicTransportFootprint = (0, calculateCfactor_1.calculatePublicTransport)(publicTransport, surveyData_1.publicTransportCF);
+        const goodsAndServicesFootprint = (0, calculateCfactor_1.calculateGoodsAndServices)(Object.assign(Object.assign({}, goodsConsumption), servicesConsumption), surveyData_1.priceMultiplier);
         const homeEmission = energyFootprint / householdSize;
         const shoppingEmission = goodsAndServicesFootprint / householdSize;
         const travelEmission = [
             carFootprint,
             bikeFootprint,
-            returnFlightFootprint,
-            oneWayFlightFootprint,
+            flightFootprint,
             publicTransportFootprint,
         ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
         const totalEmission = [
@@ -40,7 +38,6 @@ const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             travelEmission,
             shoppingEmission,
         ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        console.log(carFootprint, bikeFootprint, returnFlightFootprint, oneWayFlightFootprint, publicTransportFootprint);
         const addSurvery = yield firebase_1.db
             .collection("profile")
             .doc(uid)

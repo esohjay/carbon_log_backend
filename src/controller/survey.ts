@@ -8,7 +8,7 @@ import {
   calculateBike,
   calculatePublicTransport,
   calculateGoodsAndServices,
-} from "../lib/calculateCF";
+} from "../lib/calculateCfactor";
 import {
   carSizeCF,
   energyCF,
@@ -37,14 +37,7 @@ export const createSurvey = async (req: Request, res: Response) => {
     const dietFootprint = dietaryCF[diet] * 365;
     const energyFootprint = calculateEnergy(energy, energyCF);
     const carFootprint = calculateCar(car, carSizeCF);
-    const returnFlightFootprint = calculateFlight(
-      flight.withRf,
-      flightCF.withRF
-    );
-    const oneWayFlightFootprint = calculateFlight(
-      flight.withoutRf,
-      flightCF.withoutRF
-    );
+    const flightFootprint = calculateFlight(flight, flightCF);
     const bikeFootprint = calculateBike(bike, motorBikeCF);
     const publicTransportFootprint = calculatePublicTransport(
       publicTransport,
@@ -59,8 +52,7 @@ export const createSurvey = async (req: Request, res: Response) => {
     const travelEmission = [
       carFootprint,
       bikeFootprint,
-      returnFlightFootprint,
-      oneWayFlightFootprint,
+      flightFootprint,
       publicTransportFootprint,
     ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     const totalEmission = [
@@ -69,13 +61,7 @@ export const createSurvey = async (req: Request, res: Response) => {
       travelEmission,
       shoppingEmission,
     ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    console.log(
-      carFootprint,
-      bikeFootprint,
-      returnFlightFootprint,
-      oneWayFlightFootprint,
-      publicTransportFootprint
-    );
+
     const addSurvery = await db
       .collection("profile")
       .doc(uid)
