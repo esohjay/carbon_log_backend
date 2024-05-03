@@ -38,7 +38,7 @@ export const addTravelActivity = async (req: Request, res: Response) => {
         value: distance,
         mode: "flight",
         unit: null,
-        id: uid,
+        uid,
       });
     }
     if (publicTransport) {
@@ -49,7 +49,7 @@ export const addTravelActivity = async (req: Request, res: Response) => {
         value: distance,
         mode: "publicTransport",
         unit,
-        id: uid,
+        uid,
       });
     }
     if (car) {
@@ -59,7 +59,7 @@ export const addTravelActivity = async (req: Request, res: Response) => {
         value: car.value,
         mode: "car",
         unit: car.unit,
-        id: uid,
+        uid,
       });
     }
     if (bike) {
@@ -69,13 +69,13 @@ export const addTravelActivity = async (req: Request, res: Response) => {
         value: bike.value,
         mode: "bike",
         unit: bike.unit,
-        id: uid,
+        uid,
       });
     }
 
     res.status(201).json({
       message: "Success",
-      data,
+      data: { ...data, category: "travel" },
     });
   } catch (error) {
     console.log(error);
@@ -91,9 +91,10 @@ export const addActivity = async (req: Request, res: Response) => {
 
     const trackRef = db.collection("track").doc(uid);
     const doc = await trackRef.get();
+    const id = generateId();
     if (!doc.exists) {
       await trackRef.set({
-        [category]: [{ activity, amount, emission, id: generateId() }],
+        [category]: [{ activity, amount, emission, id }],
       });
     } else {
       await trackRef.update({
@@ -101,17 +102,27 @@ export const addActivity = async (req: Request, res: Response) => {
           activity,
           amount,
           emission,
-          id: generateId(),
+          id,
         }),
       });
     }
 
     res.status(201).json({
       message: "Success",
-      data: { activity, amount, emission },
+      data: { activity, amount, emission, category, id },
     });
   } catch (error) {
     console.log(error);
+    return res.status(400).json(error);
+  }
+};
+export const getTrack = async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.user!;
+    const track = await db.collection("track").doc(uid).get();
+    console.log(track.data());
+    res.status(201).json(track.data());
+  } catch (error) {
     return res.status(400).json(error);
   }
 };

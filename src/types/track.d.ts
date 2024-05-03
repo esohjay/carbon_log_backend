@@ -28,9 +28,10 @@ export interface TravelResponse {
 }
 
 export type TravelArgs = {
-  id: string;
+  uid: string;
   value: number | string;
   emission: number;
   unit: string | null;
   mode: "car" | "publicTransport" | "bike" | "flight";
+  id?: string;
 };

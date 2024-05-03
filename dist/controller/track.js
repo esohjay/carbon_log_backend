@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addActivity = exports.addTravelActivity = void 0;
+exports.getTrack = exports.addActivity = exports.addTravelActivity = void 0;
 const firebase_1 = require("../lib/firebase");
 const handleTravel_1 = require("../lib/handleTravel");
 const generateId_1 = __importDefault(require("../lib/generateId"));
@@ -39,7 +39,7 @@ const addTravelActivity = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 value: distance,
                 mode: "flight",
                 unit: null,
-                id: uid,
+                uid,
             });
         }
         if (publicTransport) {
@@ -50,7 +50,7 @@ const addTravelActivity = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 value: distance,
                 mode: "publicTransport",
                 unit,
-                id: uid,
+                uid,
             });
         }
         if (car) {
@@ -60,7 +60,7 @@ const addTravelActivity = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 value: car.value,
                 mode: "car",
                 unit: car.unit,
-                id: uid,
+                uid,
             });
         }
         if (bike) {
@@ -70,12 +70,12 @@ const addTravelActivity = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 value: bike.value,
                 mode: "bike",
                 unit: bike.unit,
-                id: uid,
+                uid,
             });
         }
         res.status(201).json({
             message: "Success",
-            data,
+            data: Object.assign(Object.assign({}, data), { category: "travel" }),
         });
     }
     catch (error) {
@@ -91,9 +91,10 @@ const addActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const emission = amount * surveyData_1.priceMultiplier[activity];
         const trackRef = firebase_1.db.collection("track").doc(uid);
         const doc = yield trackRef.get();
+        const id = (0, generateId_1.default)();
         if (!doc.exists) {
             yield trackRef.set({
-                [category]: [{ activity, amount, emission, id: (0, generateId_1.default)() }],
+                [category]: [{ activity, amount, emission, id }],
             });
         }
         else {
@@ -102,13 +103,13 @@ const addActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     activity,
                     amount,
                     emission,
-                    id: (0, generateId_1.default)(),
+                    id,
                 }),
             });
         }
         res.status(201).json({
             message: "Success",
-            data: { activity, amount, emission },
+            data: { activity, amount, emission, category, id },
         });
     }
     catch (error) {
@@ -117,3 +118,15 @@ const addActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.addActivity = addActivity;
+const getTrack = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uid } = req.user;
+        const track = yield firebase_1.db.collection("track").doc(uid).get();
+        console.log(track.data());
+        res.status(201).json(track.data());
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.getTrack = getTrack;

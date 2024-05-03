@@ -9,4 +9,6 @@ const catchAsync_1 = require("../middleware/catchAsync");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.post("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(track_1.addActivity));
+router.post("/travel", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(track_1.addTravelActivity));
+router.get("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(track_1.getTrack));
 exports.default = router;

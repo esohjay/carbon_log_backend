@@ -17,12 +17,13 @@ const firestore_1 = require("firebase-admin/firestore");
 const firebase_1 = require("../lib/firebase");
 const generateId_1 = __importDefault(require("./generateId"));
 const handleTravel = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, emission, unit, mode, value } = data;
-    const trackRef = firebase_1.db.collection("track").doc(id);
+    const { uid, emission, unit, mode, value } = data;
+    const trackRef = firebase_1.db.collection("track").doc(uid);
     const doc = yield trackRef.get();
+    const id = (0, generateId_1.default)();
     if (!doc.exists) {
         yield trackRef.set({
-            travel: [{ value, mode, emission, id: (0, generateId_1.default)(), unit }],
+            travel: [{ value, mode, emission, id, unit }],
         });
     }
     else {
@@ -31,11 +32,11 @@ const handleTravel = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 value,
                 mode,
                 emission,
-                id: (0, generateId_1.default)(),
+                id,
                 unit,
             }),
         });
     }
-    return data;
+    return Object.assign(Object.assign({}, data), { id });
 });
 exports.handleTravel = handleTravel;
