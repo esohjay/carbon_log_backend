@@ -21,9 +21,10 @@ const handleTravel = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const trackRef = firebase_1.db.collection("track").doc(uid);
     const doc = yield trackRef.get();
     const id = (0, generateId_1.default)();
+    const timestamp = firestore_1.FieldValue.serverTimestamp();
     if (!doc.exists) {
         yield trackRef.set({
-            travel: [{ value, mode, emission, id, unit }],
+            travel: [{ value, mode, emission, id, unit, timestamp }],
         });
     }
     else {
@@ -34,9 +35,10 @@ const handleTravel = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 emission,
                 id,
                 unit,
+                timestamp,
             }),
         });
     }
-    return Object.assign(Object.assign({}, data), { id });
+    return Object.assign(Object.assign({}, data), { id, timestamp });
 });
 exports.handleTravel = handleTravel;

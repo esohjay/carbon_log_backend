@@ -4,6 +4,7 @@ import { ExpressError } from "./middleware/ExpressError";
 import userRoute from "./routes/user";
 import surveyRoute from "./routes/survey";
 import trackRoute from "./routes/track";
+import actionRoute from "./routes/action";
 import cors from "cors";
 
 const app = express();
@@ -19,6 +20,7 @@ app.get("/", (_, res) => {
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/survey", surveyRoute);
 app.use("/api/v1/track", trackRoute);
+app.use("/api/v1/action", actionRoute);
 
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page Not Found", 404));

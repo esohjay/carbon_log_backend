@@ -8,9 +8,10 @@ export const handleTravel = async (data: TravelArgs) => {
   const trackRef = db.collection("track").doc(uid);
   const doc = await trackRef.get();
   const id = generateId();
+  const timestamp = FieldValue.serverTimestamp();
   if (!doc.exists) {
     await trackRef.set({
-      travel: [{ value, mode, emission, id, unit }],
+      travel: [{ value, mode, emission, id, unit, timestamp }],
     });
   } else {
     await trackRef.update({
@@ -20,8 +21,9 @@ export const handleTravel = async (data: TravelArgs) => {
         emission,
         id,
         unit,
+        timestamp,
       }),
     });
   }
-  return { ...data, id };
+  return { ...data, id, timestamp };
 };

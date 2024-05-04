@@ -92,9 +92,10 @@ const addActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const trackRef = firebase_1.db.collection("track").doc(uid);
         const doc = yield trackRef.get();
         const id = (0, generateId_1.default)();
+        const timestamp = firestore_1.FieldValue.serverTimestamp();
         if (!doc.exists) {
             yield trackRef.set({
-                [category]: [{ activity, amount, emission, id }],
+                [category]: [{ activity, amount, emission, id, timestamp }],
             });
         }
         else {
@@ -104,12 +105,13 @@ const addActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     amount,
                     emission,
                     id,
+                    timestamp,
                 }),
             });
         }
         res.status(201).json({
             message: "Success",
-            data: { activity, amount, emission, category, id },
+            data: { activity, amount, emission, category, id, timestamp },
         });
     }
     catch (error) {

@@ -34,4 +34,5 @@ export type TravelArgs = {
   unit: string | null;
   mode: "car" | "publicTransport" | "bike" | "flight";
   id?: string;
+  timesamp?: string;
 };

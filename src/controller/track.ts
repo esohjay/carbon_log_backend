@@ -92,9 +92,10 @@ export const addActivity = async (req: Request, res: Response) => {
     const trackRef = db.collection("track").doc(uid);
     const doc = await trackRef.get();
     const id = generateId();
+    const timestamp = FieldValue.serverTimestamp();
     if (!doc.exists) {
       await trackRef.set({
-        [category]: [{ activity, amount, emission, id }],
+        [category]: [{ activity, amount, emission, id, timestamp }],
       });
     } else {
       await trackRef.update({
@@ -103,13 +104,14 @@ export const addActivity = async (req: Request, res: Response) => {
           amount,
           emission,
           id,
+          timestamp,
         }),
       });
     }
 
     res.status(201).json({
       message: "Success",
-      data: { activity, amount, emission, category, id },
+      data: { activity, amount, emission, category, id, timestamp },
     });
   } catch (error) {
     console.log(error);
