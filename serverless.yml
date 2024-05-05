@@ -23,6 +23,7 @@ frameworkVersion: "3"
 provider:
   name: aws
   runtime: nodejs18.x
+  timeout: 30
 
   # you can overwrite defaults here
   #  stage: dev

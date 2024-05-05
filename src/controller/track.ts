@@ -17,7 +17,7 @@ import {
   publicTransportCF,
 } from "../lib/surveyData";
 import { calculateCar, calculateBike } from "../lib/calculateCfactor";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { averageFlightDistance } from "../lib/surveyData";
 
 export const addTravelActivity = async (req: Request, res: Response) => {
@@ -92,7 +92,7 @@ export const addActivity = async (req: Request, res: Response) => {
     const trackRef = db.collection("track").doc(uid);
     const doc = await trackRef.get();
     const id = generateId();
-    const timestamp = FieldValue.serverTimestamp();
+    const timestamp = Timestamp.now();
     if (!doc.exists) {
       await trackRef.set({
         [category]: [{ activity, amount, emission, id, timestamp }],
