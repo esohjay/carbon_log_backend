@@ -5,6 +5,7 @@ import userRoute from "./routes/user";
 import surveyRoute from "./routes/survey";
 import trackRoute from "./routes/track";
 import actionRoute from "./routes/action";
+import campaignRoute from "./routes/campaign";
 import cors from "cors";
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/survey", surveyRoute);
 app.use("/api/v1/track", trackRoute);
 app.use("/api/v1/action", actionRoute);
+app.use("/api/v1/campaign", campaignRoute);
 
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
