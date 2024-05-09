@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.conversation = exports.leaveCampaign = exports.joinCampaign = exports.createCampaign = void 0;
+exports.getJoinedCampaigns = exports.getCampaigns = exports.conversation = exports.leaveCampaign = exports.joinCampaign = exports.createCampaign = void 0;
 const firestore_1 = require("firebase-admin/firestore");
 const firebase_1 = require("../lib/firebase");
 const createCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -23,7 +23,6 @@ const createCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function*
             createdBy: uid,
             users: firestore_1.FieldValue.arrayUnion(uid),
         });
-        console.log(campaign.get());
         res.status(201).json({ message: "Success" });
     }
     catch (error) {
@@ -77,3 +76,34 @@ const conversation = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.conversation = conversation;
+const getCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const campaignsSnapshot = yield firebase_1.db.collection("campaign").get();
+        res.status(201).json(campaignsSnapshot.docs.map((doc) => {
+            console.log(doc.data());
+            return Object.assign(Object.assign({}, doc.data()), { id: doc.id });
+        }));
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.getCampaigns = getCampaigns;
+const getJoinedCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uid } = req.user;
+        const campaignsSnapshot = yield firebase_1.db
+            .collection("campaign")
+            .where("users", "array-contains", uid)
+            .get();
+        console.log(uid, "here", campaignsSnapshot);
+        res.status(201).json(campaignsSnapshot.docs.map((doc) => {
+            console.log(doc.data(), "here");
+            return Object.assign(Object.assign({}, doc.data()), { id: doc.id });
+        }));
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.getJoinedCampaigns = getJoinedCampaigns;

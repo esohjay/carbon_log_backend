@@ -17,7 +17,7 @@ export const createCampaign = async (req: Request, res: Response) => {
       createdBy: uid,
       users: FieldValue.arrayUnion(uid),
     });
-    console.log(campaign.get());
+
     res.status(201).json({ message: "Success" });
   } catch (error) {
     return res.status(400).json(error);
@@ -65,6 +65,35 @@ export const conversation = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({ message: "Success" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+export const getCampaigns = async (req: Request, res: Response) => {
+  try {
+    const campaignsSnapshot = await db.collection("campaign").get();
+    res.status(201).json(
+      campaignsSnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      })
+    );
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+export const getJoinedCampaigns = async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.user!;
+    const campaignsSnapshot = await db
+      .collection("campaign")
+      .where("users", "array-contains", uid)
+      .get();
+
+    res.status(201).json(
+      campaignsSnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      })
+    );
   } catch (error) {
     return res.status(400).json(error);
   }
