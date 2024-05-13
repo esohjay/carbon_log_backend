@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getJoinedCampaigns = exports.getCampaigns = exports.conversation = exports.leaveCampaign = exports.joinCampaign = exports.createCampaign = void 0;
+exports.getJoinedCampaigns = exports.getCampaign = exports.getCampaigns = exports.getConversation = exports.conversation = exports.leaveCampaign = exports.joinCampaign = exports.createCampaign = void 0;
 const firestore_1 = require("firebase-admin/firestore");
 const firebase_1 = require("../lib/firebase");
 const createCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -62,13 +62,18 @@ const leaveCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.leaveCampaign = leaveCampaign;
 const conversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { uid, displayName } = req.user;
+        const { uid, name } = req.user;
+        console.log(req.user);
         const { campaignId } = req.params;
         const messageRef = firebase_1.db
             .collection("campaign")
             .doc(campaignId)
             .collection("messages");
-        yield messageRef.add(Object.assign({ sender: { id: uid, name: displayName } }, req.body));
+        yield messageRef.add({
+            sender: { id: uid, name },
+            message: req.body.message,
+            timestamp: firestore_1.Timestamp.now(),
+        });
         res.status(201).json({ message: "Success" });
     }
     catch (error) {
@@ -76,11 +81,28 @@ const conversation = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.conversation = conversation;
+const getConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uid, displayName } = req.user;
+        const { campaignId } = req.params;
+        const messageRef = yield firebase_1.db
+            .collection("campaign")
+            .doc(campaignId)
+            .collection("messages")
+            .get();
+        res.status(201).json(messageRef.docs.map((doc) => {
+            return Object.assign(Object.assign({}, doc.data()), { id: doc.id });
+        }));
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.getConversation = getConversation;
 const getCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const campaignsSnapshot = yield firebase_1.db.collection("campaign").get();
         res.status(201).json(campaignsSnapshot.docs.map((doc) => {
-            console.log(doc.data());
             return Object.assign(Object.assign({}, doc.data()), { id: doc.id });
         }));
     }
@@ -89,6 +111,21 @@ const getCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getCampaigns = getCampaigns;
+const getCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { campaignId } = req.params;
+        console.log(campaignId);
+        const campaignsSnapshot = yield firebase_1.db
+            .collection("campaign")
+            .doc(campaignId)
+            .get();
+        res.status(201).json(campaignsSnapshot.data());
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.getCampaign = getCampaign;
 const getJoinedCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid } = req.user;
@@ -96,9 +133,7 @@ const getJoinedCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, funct
             .collection("campaign")
             .where("users", "array-contains", uid)
             .get();
-        console.log(uid, "here", campaignsSnapshot);
         res.status(201).json(campaignsSnapshot.docs.map((doc) => {
-            console.log(doc.data(), "here");
             return Object.assign(Object.assign({}, doc.data()), { id: doc.id });
         }));
     }

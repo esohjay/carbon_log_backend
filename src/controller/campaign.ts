@@ -51,7 +51,8 @@ export const leaveCampaign = async (req: Request, res: Response) => {
 };
 export const conversation = async (req: Request, res: Response) => {
   try {
-    const { uid, displayName } = req.user!;
+    const { uid, name } = req.user!;
+    console.log(req.user);
     const { campaignId } = req.params;
 
     const messageRef = db
@@ -60,11 +61,31 @@ export const conversation = async (req: Request, res: Response) => {
       .collection("messages");
 
     await messageRef.add({
-      sender: { id: uid, name: displayName },
-      ...req.body,
+      sender: { id: uid, name },
+      message: req.body.message,
+      timestamp: Timestamp.now(),
     });
 
     res.status(201).json({ message: "Success" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+export const getConversation = async (req: Request, res: Response) => {
+  try {
+    const { uid, displayName } = req.user!;
+    const { campaignId } = req.params;
+    const messageRef = await db
+      .collection("campaign")
+      .doc(campaignId)
+      .collection("messages")
+      .get();
+
+    res.status(201).json(
+      messageRef.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      })
+    );
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -77,6 +98,20 @@ export const getCampaigns = async (req: Request, res: Response) => {
         return { ...doc.data(), id: doc.id };
       })
     );
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+export const getCampaign = async (req: Request, res: Response) => {
+  try {
+    const { campaignId } = req.params;
+    console.log(campaignId);
+    const campaignsSnapshot = await db
+      .collection("campaign")
+      .doc(campaignId)
+      .get();
+
+    res.status(201).json(campaignsSnapshot.data());
   } catch (error) {
     return res.status(400).json(error);
   }

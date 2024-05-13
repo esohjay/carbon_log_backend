@@ -11,6 +11,8 @@ const router = express_1.default.Router();
 router.post("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.createCampaign));
 router.get("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getCampaigns));
 router.get("/joined-campaign", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getJoinedCampaigns));
+router.get("/:campaignId/conversation", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getConversation));
+router.get("/:campaignId", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getCampaign));
 router.put("/:campaignId/join", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.joinCampaign));
 router.put("/:campaignId/leave", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.leaveCampaign));
 router.post("/:campaignId/conversation", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.conversation));
