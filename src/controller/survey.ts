@@ -61,23 +61,20 @@ export const createSurvey = async (req: Request, res: Response) => {
       travelEmission,
       shoppingEmission,
     ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-    const addSurvery = await db
-      .collection("profile")
-      .doc(uid)
-      .set(
-        {
-          survey: { ...req.body },
-          totalEmission,
-          emissionCategory: {
-            home: homeEmission,
-            shopping: shoppingEmission,
-            diet: dietFootprint,
-            travel: travelEmission,
-          },
+    const surveyRef = db.collection("profile").doc(uid).collection("survey");
+    await surveyRef.doc(uid).set(
+      {
+        survey: { ...req.body },
+        totalEmission,
+        emissionCategory: {
+          home: homeEmission,
+          shopping: shoppingEmission,
+          diet: dietFootprint,
+          travel: travelEmission,
         },
-        { merge: true }
-      );
+      },
+      { merge: true }
+    );
 
     res.status(201).json({
       message: "Success",
@@ -93,6 +90,20 @@ export const createSurvey = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(400).json(error);
+  }
+};
+export const getSurvey = async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.user!;
+    const surveyRef = await db
+      .collection("profile")
+      .doc(uid)
+      .collection("survey")
+      .doc(uid)
+      .get();
+    res.status(201).json(surveyRef.data());
+  } catch (error) {
     return res.status(400).json(error);
   }
 };

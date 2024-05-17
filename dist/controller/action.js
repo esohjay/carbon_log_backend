@@ -54,13 +54,37 @@ const logAction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid } = req.user;
         const { emission, title, category, point, id } = req.body;
-        console.log(emission, uid);
+        // console.log(emission, uid);
+        const timestamp = firestore_1.Timestamp.now();
+        const actionLogRef = firebase_1.db
+            .collection("profile")
+            .doc(uid)
+            .collection("action-log");
+        const docExist = yield actionLogRef.doc(id).get();
+        if (docExist.exists) {
+            yield actionLogRef.doc(id).update({
+                attemptCount: firestore_1.FieldValue.increment(1),
+                pointsEarned: firestore_1.FieldValue.increment(point),
+                carbonSaved: firestore_1.FieldValue.increment(emission),
+                timestamp,
+            });
+        }
+        else {
+            console.log("set");
+            yield actionLogRef.doc(id).set({
+                carbonSaved: emission,
+                pointsEarned: point,
+                attemptCount: 1,
+                title,
+                emission,
+                category,
+                timestamp,
+            });
+        }
         const actionRef = firebase_1.db.collection("actionLog").doc(uid);
         const doc = yield actionRef.get();
         const logId = (0, generateId_1.default)();
-        const timestamp = firestore_1.Timestamp.now();
         if (!doc.exists) {
-            console.log(logId);
             yield actionRef.set({
                 carbonSaved: emission,
                 pointsEarned: point,
@@ -70,7 +94,6 @@ const logAction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         else {
-            console.log("exist");
             yield actionRef.update({
                 carbonSaved: firestore_1.FieldValue.increment(emission),
                 pointsEarned: firestore_1.FieldValue.increment(point),

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createSurvey = void 0;
+exports.getSurvey = exports.createSurvey = void 0;
 const firebase_1 = require("../lib/firebase");
 const calculateCfactor_1 = require("../lib/calculateCfactor");
 const surveyData_1 = require("../lib/surveyData");
@@ -38,10 +38,8 @@ const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             travelEmission,
             shoppingEmission,
         ].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        const addSurvery = yield firebase_1.db
-            .collection("profile")
-            .doc(uid)
-            .set({
+        const surveyRef = firebase_1.db.collection("profile").doc(uid).collection("survey");
+        yield surveyRef.doc(uid).set({
             survey: Object.assign({}, req.body),
             totalEmission,
             emissionCategory: {
@@ -70,3 +68,19 @@ const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.createSurvey = createSurvey;
+const getSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uid } = req.user;
+        const surveyRef = yield firebase_1.db
+            .collection("profile")
+            .doc(uid)
+            .collection("survey")
+            .doc(uid)
+            .get();
+        res.status(201).json(surveyRef.data());
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.getSurvey = getSurvey;

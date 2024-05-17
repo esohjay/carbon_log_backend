@@ -42,13 +42,37 @@ export const logAction = async (req: Request, res: Response) => {
   try {
     const { uid } = req.user!;
     const { emission, title, category, point, id } = req.body as ActionBody;
-    console.log(emission, uid);
+    // console.log(emission, uid);
+    const timestamp = Timestamp.now();
+    const actionLogRef = db
+      .collection("profile")
+      .doc(uid)
+      .collection("action-log");
+    const docExist = await actionLogRef.doc(id).get();
+    if (docExist.exists) {
+      await actionLogRef.doc(id).update({
+        attemptCount: FieldValue.increment(1),
+        pointsEarned: FieldValue.increment(point),
+        carbonSaved: FieldValue.increment(emission),
+        timestamp,
+      });
+    } else {
+      console.log("set");
+      await actionLogRef.doc(id).set({
+        carbonSaved: emission,
+        pointsEarned: point,
+        attemptCount: 1,
+        title,
+        emission,
+        category,
+        timestamp,
+      });
+    }
     const actionRef = db.collection("actionLog").doc(uid);
     const doc = await actionRef.get();
     const logId = generateId();
-    const timestamp = Timestamp.now();
+
     if (!doc.exists) {
-      console.log(logId);
       await actionRef.set({
         carbonSaved: emission,
         pointsEarned: point,
@@ -57,7 +81,6 @@ export const logAction = async (req: Request, res: Response) => {
         ],
       });
     } else {
-      console.log("exist");
       await actionRef.update({
         carbonSaved: FieldValue.increment(emission),
         pointsEarned: FieldValue.increment(point),

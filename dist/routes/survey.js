@@ -9,4 +9,5 @@ const catchAsync_1 = require("../middleware/catchAsync");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.post("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(survey_1.createSurvey));
+router.get("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(survey_1.getSurvey));
 exports.default = router;
