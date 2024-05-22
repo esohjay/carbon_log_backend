@@ -11,4 +11,5 @@ const router = express_1.default.Router();
 router.post("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(track_1.addActivity));
 router.post("/travel", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(track_1.addTravelActivity));
 router.get("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(track_1.getTrack));
+router.delete("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(track_1.deleteActivity));
 exports.default = router;

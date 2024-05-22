@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTrack = exports.addActivity = exports.addTravelActivity = void 0;
+exports.deleteActivity = exports.getTrack = exports.addActivity = exports.addTravelActivity = void 0;
 const firebase_1 = require("../lib/firebase");
 const handleTravel_1 = require("../lib/handleTravel");
 const generateId_1 = __importDefault(require("../lib/generateId"));
@@ -132,3 +132,19 @@ const getTrack = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getTrack = getTrack;
+const deleteActivity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uid } = req.user;
+        // const { activity, amount, category, } = req.body
+        console.log(req.body);
+        const trackRef = firebase_1.db.collection("track").doc(uid);
+        yield trackRef.update({
+            [req.body.category]: firestore_1.FieldValue.arrayRemove(Object.assign({}, req.body)),
+        });
+        res.status(201).json({ message: "Success" });
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.deleteActivity = deleteActivity;

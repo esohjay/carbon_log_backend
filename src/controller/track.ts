@@ -128,3 +128,20 @@ export const getTrack = async (req: Request, res: Response) => {
     return res.status(400).json(error);
   }
 };
+export const deleteActivity = async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.user!;
+    // const { activity, amount, category, } = req.body
+    console.log(req.body);
+    const trackRef = db.collection("track").doc(uid);
+    await trackRef.update({
+      [req.body.category]: FieldValue.arrayRemove({
+        ...req.body,
+      }),
+    });
+
+    res.status(201).json({ message: "Success" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
