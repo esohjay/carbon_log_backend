@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { ActionBody } from "../types/action";
 import { calculatePoint } from "../lib/calculatePoint";
 import generateId from "../lib/generateId";
+import { deleteCollection } from "../lib/deletionHelper";
 
 export const createCampaign = async (req: Request, res: Response) => {
   try {
@@ -105,7 +106,6 @@ export const getCampaigns = async (req: Request, res: Response) => {
 export const getCampaign = async (req: Request, res: Response) => {
   try {
     const { campaignId } = req.params;
-    console.log(campaignId);
     const campaignsSnapshot = await db
       .collection("campaign")
       .doc(campaignId)
@@ -129,6 +129,32 @@ export const getJoinedCampaigns = async (req: Request, res: Response) => {
         return { ...doc.data(), id: doc.id };
       })
     );
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+export const updateCampaign = async (req: Request, res: Response) => {
+  try {
+    const { campaignId } = req.params;
+    const campaignRef = db.collection("campaign").doc(campaignId);
+    await campaignRef.update({
+      ...req.body,
+    });
+
+    res.status(201).json({ message: "Success" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};
+
+export const deleteCampaign = async (req: Request, res: Response) => {
+  try {
+    const { campaignId } = req.params;
+    const campaignRef = db.collection("campaign").doc(campaignId);
+    await campaignRef.delete();
+
+    await deleteCollection(`/campaign/${campaignId}/messages`, 100);
+    res.status(201).json({ message: "Success" });
   } catch (error) {
     return res.status(400).json(error);
   }

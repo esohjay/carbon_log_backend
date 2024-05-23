@@ -13,7 +13,9 @@ router.get("/", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getCa
 router.get("/joined-campaign", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getJoinedCampaigns));
 router.get("/:campaignId/conversation", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getConversation));
 router.get("/:campaignId", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.getCampaign));
+router.delete("/:campaignId", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.deleteCampaign));
 router.put("/:campaignId/join", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.joinCampaign));
 router.put("/:campaignId/leave", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.leaveCampaign));
+router.put("/:campaignId/edit", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.updateCampaign));
 router.post("/:campaignId/conversation", auth_1.verifyUser, (0, catchAsync_1.catchAsync)(campaign_1.conversation));
 exports.default = router;

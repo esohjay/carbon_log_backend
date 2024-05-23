@@ -131,14 +131,41 @@ export const getTrack = async (req: Request, res: Response) => {
 export const deleteActivity = async (req: Request, res: Response) => {
   try {
     const { uid } = req.user!;
-    // const { activity, amount, category, } = req.body
+    const {
+      activity,
+      amount,
+      category,
+      emission,
+      id,
+      timestamp,
+      mode,
+      unit,
+      value,
+    } = req.body;
     console.log(req.body);
     const trackRef = db.collection("track").doc(uid);
-    await trackRef.update({
-      [req.body.category]: FieldValue.arrayRemove({
-        ...req.body,
-      }),
-    });
+    if (category === "travel") {
+      await trackRef.update({
+        [category]: FieldValue.arrayRemove({
+          unit,
+          mode,
+          emission,
+          id,
+          timestamp,
+          value,
+        }),
+      });
+    } else {
+      await trackRef.update({
+        [category]: FieldValue.arrayRemove({
+          activity,
+          amount,
+          emission,
+          id,
+          timestamp,
+        }),
+      });
+    }
 
     res.status(201).json({ message: "Success" });
   } catch (error) {

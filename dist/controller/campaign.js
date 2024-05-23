@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getJoinedCampaigns = exports.getCampaign = exports.getCampaigns = exports.getConversation = exports.conversation = exports.leaveCampaign = exports.joinCampaign = exports.createCampaign = void 0;
+exports.deleteCampaign = exports.updateCampaign = exports.getJoinedCampaigns = exports.getCampaign = exports.getCampaigns = exports.getConversation = exports.conversation = exports.leaveCampaign = exports.joinCampaign = exports.createCampaign = void 0;
 const firestore_1 = require("firebase-admin/firestore");
 const firebase_1 = require("../lib/firebase");
+const deletionHelper_1 = require("../lib/deletionHelper");
 const createCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid, email } = req.user;
@@ -114,7 +115,6 @@ exports.getCampaigns = getCampaigns;
 const getCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { campaignId } = req.params;
-        console.log(campaignId);
         const campaignsSnapshot = yield firebase_1.db
             .collection("campaign")
             .doc(campaignId)
@@ -142,3 +142,28 @@ const getJoinedCampaigns = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getJoinedCampaigns = getJoinedCampaigns;
+const updateCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { campaignId } = req.params;
+        const campaignRef = firebase_1.db.collection("campaign").doc(campaignId);
+        yield campaignRef.update(Object.assign({}, req.body));
+        res.status(201).json({ message: "Success" });
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.updateCampaign = updateCampaign;
+const deleteCampaign = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { campaignId } = req.params;
+        const campaignRef = firebase_1.db.collection("campaign").doc(campaignId);
+        yield campaignRef.delete();
+        yield (0, deletionHelper_1.deleteCollection)(`/campaign/${campaignId}/messages`, 100);
+        res.status(201).json({ message: "Success" });
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+});
+exports.deleteCampaign = deleteCampaign;
