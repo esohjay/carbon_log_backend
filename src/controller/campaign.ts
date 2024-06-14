@@ -53,20 +53,17 @@ export const leaveCampaign = async (req: Request, res: Response) => {
 export const conversation = async (req: Request, res: Response) => {
   try {
     const { uid, name } = req.user!;
-    console.log(req.user);
     const { campaignId } = req.params;
 
     const messageRef = db
       .collection("campaign")
       .doc(campaignId)
       .collection("messages");
-
     await messageRef.add({
       sender: { id: uid, name },
       message: req.body.message,
-      timestamp: Timestamp.now(),
+      timestamp: FieldValue.serverTimestamp(),
     });
-
     res.status(201).json({ message: "Success" });
   } catch (error) {
     return res.status(400).json(error);

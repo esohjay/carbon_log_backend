@@ -64,7 +64,6 @@ exports.leaveCampaign = leaveCampaign;
 const conversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uid, name } = req.user;
-        console.log(req.user);
         const { campaignId } = req.params;
         const messageRef = firebase_1.db
             .collection("campaign")
@@ -73,7 +72,7 @@ const conversation = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         yield messageRef.add({
             sender: { id: uid, name },
             message: req.body.message,
-            timestamp: firestore_1.Timestamp.now(),
+            timestamp: firestore_1.FieldValue.serverTimestamp(),
         });
         res.status(201).json({ message: "Success" });
     }

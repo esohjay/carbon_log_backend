@@ -11,7 +11,7 @@ import { verifyUser } from "../middleware/auth";
 
 const router = express.Router();
 
-router.post("/", verifyUser, catchAsync(createUser));
+router.post("/", catchAsync(createUser));
 router.put("/edit", verifyUser, catchAsync(updateUser));
 router.put("/edit-password", verifyUser, catchAsync(updatePassword));
 router.get("/", verifyUser, catchAsync(getUser));

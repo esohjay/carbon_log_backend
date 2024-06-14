@@ -14,18 +14,32 @@ const firebase_1 = require("../lib/firebase");
 const deletionHelper_1 = require("../lib/deletionHelper");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { uid, email } = req.user;
-        const { fullName } = req.body;
+        // const { uid, email } = req.user!;
+        const { fullName, email, password } = req.body;
         let userNames = [""];
         if (typeof fullName === "string") {
             userNames = fullName.split(" ");
         }
-        yield firebase_1.auth.updateUser(uid, { displayName: userNames[0] });
-        const user = yield firebase_1.db.collection("profile").doc(uid).set({
-            email,
-            firstName: userNames[0],
-            fullName,
-        });
+        let firebaseUser;
+        // console.log(userNames[0], uid);
+        try {
+            firebaseUser = yield firebase_1.auth.createUser({
+                displayName: userNames[0],
+                email,
+                password,
+                disabled: false,
+            });
+        }
+        catch (error) {
+            return res.status(400).json(error);
+        }
+        if (firebaseUser) {
+            const user = yield firebase_1.db.collection("profile").doc(firebaseUser.uid).set({
+                email,
+                firstName: userNames[0],
+                fullName,
+            });
+        }
         res.status(201).json({ message: "Success" });
     }
     catch (error) {

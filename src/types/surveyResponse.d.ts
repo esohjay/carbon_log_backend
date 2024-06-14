@@ -95,12 +95,14 @@ export interface CarData {
   value: string;
   size: keyof typeof MotorSize;
   fuelType: keyof typeof FuelType;
+  id: string;
 }
 export interface BikeData {
   period: "yearly" | "monthly";
   unit: "km" | "mile";
   value: string;
   size: keyof typeof MotorSize;
+  id: string;
 }
 
 export interface EnergyResponse {

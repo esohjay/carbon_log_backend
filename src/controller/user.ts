@@ -1,21 +1,37 @@
 import { db, auth } from "../lib/firebase";
 import { Request, Response } from "express";
 import { deleteCollection } from "../lib/deletionHelper";
+import { UserRecord } from "firebase-admin/auth";
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { uid, email } = req.user!;
-    const { fullName } = req.body;
+    // const { uid, email } = req.user!;
+    const { fullName, email, password } = req.body;
     let userNames: string[] = [""];
     if (typeof fullName === "string") {
       userNames = fullName.split(" ");
     }
-    await auth.updateUser(uid, { displayName: userNames[0] });
-    const user = await db.collection("profile").doc(uid).set({
-      email,
-      firstName: userNames[0],
-      fullName,
-    });
+    let firebaseUser: UserRecord | undefined;
+    // console.log(userNames[0], uid);
+    try {
+      firebaseUser = await auth.createUser({
+        displayName: userNames[0],
+        email,
+        password,
+        disabled: false,
+      });
+    } catch (error) {
+      return res.status(400).json(error);
+    }
+
+    if (firebaseUser) {
+      const user = await db.collection("profile").doc(firebaseUser.uid).set({
+        email,
+        firstName: userNames[0],
+        fullName,
+      });
+    }
+
     res.status(201).json({ message: "Success" });
   } catch (error) {
     return res.status(400).json(error);
