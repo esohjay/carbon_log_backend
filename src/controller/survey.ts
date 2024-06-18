@@ -34,6 +34,8 @@ export const createSurvey = async (req: Request, res: Response) => {
       servicesConsumption,
     } = req.body as SurveyResponse;
 
+    const setHouseholdSize = householdSize === 0 ? 1 : householdSize;
+
     const dietFootprint = dietaryCF[diet] * 365;
     const energyFootprint = calculateEnergy(energy, energyCF);
     const carFootprint = calculateCar(car, carSizeCF);
@@ -47,8 +49,8 @@ export const createSurvey = async (req: Request, res: Response) => {
       { ...goodsConsumption, ...servicesConsumption },
       priceMultiplier
     );
-    const homeEmission = energyFootprint / householdSize;
-    const shoppingEmission = goodsAndServicesFootprint / householdSize;
+    const homeEmission = energyFootprint / setHouseholdSize;
+    const shoppingEmission = goodsAndServicesFootprint / setHouseholdSize;
     const travelEmission = [
       carFootprint,
       bikeFootprint,
