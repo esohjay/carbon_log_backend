@@ -131,44 +131,58 @@ export const getTrack = async (req: Request, res: Response) => {
 export const deleteActivity = async (req: Request, res: Response) => {
   try {
     const { uid } = req.user!;
-    const {
-      activity,
-      amount,
-      category,
-      emission,
-      id,
-      timestamp,
-      mode,
-      unit,
-      value,
-    } = req.body;
-    console.log(req.body);
+    const { category, activityList } = req.body;
     const trackRef = db.collection("track").doc(uid);
-    if (category === "travel") {
-      await trackRef.update({
-        [category]: FieldValue.arrayRemove({
-          unit,
-          mode,
-          emission,
-          id,
-          timestamp,
-          value,
-        }),
-      });
-    } else {
-      await trackRef.update({
-        [category]: FieldValue.arrayRemove({
-          activity,
-          amount,
-          emission,
-          id,
-          timestamp,
-        }),
-      });
-    }
-
+    await trackRef.update({
+      [category]: activityList,
+    });
     res.status(201).json({ message: "Success" });
   } catch (error) {
     return res.status(400).json(error);
   }
 };
+// export const deleteActivity = async (req: Request, res: Response) => {
+//   try {
+//     const { uid } = req.user!;
+//     const {
+//       activity,
+//       amount,
+//       category,
+//       emission,
+//       id,
+//       timestamp,
+//       mode,
+//       unit,
+//       value,
+//     } = req.body;
+//     console.log(req.body);
+//     const trackRef = db.collection("track").doc(uid);
+//   const trackData =  await trackRef.get()
+//     if (category === "travel") {
+//       await trackRef.update({
+//         [category]: FieldValue.arrayRemove({
+//           unit,
+//           mode,
+//           emission,
+//           id,
+//           timestamp,
+//           value,
+//         }),
+//       });
+//     } else {
+//       await trackRef.update({
+//         [category]: FieldValue.arrayRemove({
+//           activity,
+//           amount,
+//           emission,
+//           id,
+//           timestamp,
+//         }),
+//       });
+//     }
+
+//     res.status(201).json({ message: "Success" });
+//   } catch (error) {
+//     return res.status(400).json(error);
+//   }
+// };
