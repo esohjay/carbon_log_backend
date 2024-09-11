@@ -17,6 +17,7 @@ const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { uid, email } = req.user;
         const { householdSize, energy, flight, car, bike, publicTransport, diet, goodsConsumption, servicesConsumption, } = req.body;
+        const setHouseholdSize = householdSize === 0 ? 1 : householdSize;
         const dietFootprint = surveyData_1.dietaryCF[diet] * 365;
         const energyFootprint = (0, calculateCfactor_1.calculateEnergy)(energy, surveyData_1.energyCF);
         const carFootprint = (0, calculateCfactor_1.calculateCar)(car, surveyData_1.carSizeCF);
@@ -24,8 +25,8 @@ const createSurvey = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const bikeFootprint = (0, calculateCfactor_1.calculateBike)(bike, surveyData_1.motorBikeCF);
         const publicTransportFootprint = (0, calculateCfactor_1.calculatePublicTransport)(publicTransport, surveyData_1.publicTransportCF);
         const goodsAndServicesFootprint = (0, calculateCfactor_1.calculateGoodsAndServices)(Object.assign(Object.assign({}, goodsConsumption), servicesConsumption), surveyData_1.priceMultiplier);
-        const homeEmission = energyFootprint / householdSize;
-        const shoppingEmission = goodsAndServicesFootprint / householdSize;
+        const homeEmission = energyFootprint / setHouseholdSize;
+        const shoppingEmission = goodsAndServicesFootprint / setHouseholdSize;
         const travelEmission = [
             carFootprint,
             bikeFootprint,

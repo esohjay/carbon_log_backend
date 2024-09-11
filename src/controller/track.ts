@@ -131,7 +131,8 @@ export const getTrack = async (req: Request, res: Response) => {
 export const deleteActivity = async (req: Request, res: Response) => {
   try {
     const { uid } = req.user!;
-    const { category, activityList } = req.body;
+    const { data, activityList } = req.body;
+    const { category } = data;
     const trackRef = db.collection("track").doc(uid);
     await trackRef.update({
       [category]: activityList,
