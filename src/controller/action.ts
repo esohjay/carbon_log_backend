@@ -3,7 +3,7 @@ import { db, auth } from "../lib/firebase";
 import { Request, Response } from "express";
 import { ActionBody } from "../types/action";
 import { calculatePoint } from "../lib/calculatePoint";
-import generateId from "../lib/generateId";
+// import generateId from "../lib/generateId";
 
 export const addAction = async (req: Request, res: Response) => {
   try {
@@ -57,7 +57,6 @@ export const logAction = async (req: Request, res: Response) => {
         timestamp,
       });
     } else {
-      console.log("set");
       await actionLogRef.doc(id).set({
         carbonSaved: emission,
         pointsEarned: point,
@@ -68,32 +67,32 @@ export const logAction = async (req: Request, res: Response) => {
         timestamp,
       });
     }
-    const actionRef = db.collection("actionLog").doc(uid);
-    const doc = await actionRef.get();
-    const logId = generateId();
+    // const actionRef = db.collection("actionLog").doc(uid);
+    // const doc = await actionRef.get();
+    // const logId = generateId();
 
-    if (!doc.exists) {
-      await actionRef.set({
-        carbonSaved: emission,
-        pointsEarned: point,
-        actions: [
-          { actionId: id, title, id: logId, emission, category, timestamp },
-        ],
-      });
-    } else {
-      await actionRef.update({
-        carbonSaved: FieldValue.increment(emission),
-        pointsEarned: FieldValue.increment(point),
-        actions: FieldValue.arrayUnion({
-          actionId: id,
-          title,
-          id: logId,
-          emission,
-          category,
-          timestamp,
-        }),
-      });
-    }
+    // if (!doc.exists) {
+    //   await actionRef.set({
+    //     carbonSaved: emission,
+    //     pointsEarned: point,
+    //     actions: [
+    //       { actionId: id, title, id: logId, emission, category, timestamp },
+    //     ],
+    //   });
+    // } else {
+    //   await actionRef.update({
+    //     carbonSaved: FieldValue.increment(emission),
+    //     pointsEarned: FieldValue.increment(point),
+    //     actions: FieldValue.arrayUnion({
+    //       actionId: id,
+    //       title,
+    //       id: logId,
+    //       emission,
+    //       category,
+    //       timestamp,
+    //     }),
+    //   });
+    // }
 
     res.status(201).json({ message: "Success" });
   } catch (error) {

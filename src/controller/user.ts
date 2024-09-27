@@ -77,6 +77,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     await auth.deleteUser(uid);
     await db.collection("profile").doc(uid).delete();
+    await db.collection("track").doc(uid).delete();
     await db
       .collection("profile")
       .doc(uid)
